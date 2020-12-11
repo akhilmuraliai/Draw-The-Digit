@@ -1,6 +1,6 @@
 body {
 font-family: 'Open Sans', cursive;
-background-color: #242E6B;
+background-color: #FF4848;
 width: 100%;
 background-position: top;
 background-repeat: no-repeat;
@@ -39,7 +39,7 @@ h2{
     border-radius: 20px;
     border-width: 0;
     cursor: pointer;
-    color: #242E6B;
+    color: #FF4848;
     line-height: 70px;
     font-family: 'Open Sans', cursive;
     font-size: 70px;
@@ -50,6 +50,6 @@ h2{
 }
 
 .btn:hover{
-    background-color: #242E6B;
+    background-color: #FF4848;
     color: #FFFFFF;
 }
