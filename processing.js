@@ -1,9 +1,7 @@
+var model
+
 async function loadModel() {
-    // const myTensor = tf.tensor(dataX0)
-    // const model = await tf.loadLayersModel('ML-Model/tfjs-model/model.json')
-    // const result = model.predict(myTensor)
-    // prediction.as1D().argMax().print();
-    // result.as1D().argMax().print();
+    model = await tf.loadLayersModel('ML-Model/tfjs-model/model.json')
 }
 
 
@@ -51,12 +49,48 @@ function predictImage() {
     const BLACK = new cv.Scalar(0, 0, 0, 0)
     cv.copyMakeBorder(image, image, TOP, BOTTOM, LEFT, RIGHT, cv.BORDER_CONSTANT, BLACK)
 
+    // center of mass
+    cv.findContours(image, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+    cnt = contours.get(0)
+    const Moments = cv.moments(cnt, false)
 
+    const cx = Moments.m10 / Moments.m00
+    const cy = Moments.m01 / Moments.m00
+
+    // console.log(`M00: ${Moments.m00} | cx: ${cx} | cy: ${cy}`)
+
+    const X_SHIFT = Math.round(image.cols/2.0 - cx)
+    const Y_SHIFT = Math.round(image.rows/2.0 - cy)
+
+    const M = cv.matFromArray(2, 3, cv.CV_64FC1, [1, 0, X_SHIFT, 0, 1, Y_SHIFT]);
+    newSize = new cv.Size(image.rows, image.cols);
+    cv.warpAffine(image, image, M, newSize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, BLACK);
+
+    let pixelValues = image.data
+    // console.log(`BF: ${pixelValues}`)
+    pixelValues = Float32Array.from(pixelValues)
+    pixelValues = pixelValues.map((item) => {
+        return item/255.0
+    })
+    // console.log(`AF: ${pixelValues}`)
+    const shape = [1, 28, 28, 1]
+    const X = tf.tensor([pixelValues], shape)
+    // console.log(`Shape of Tensor: ${X.shape}`)
+    // console.log(`dtype of Tensor: ${X.dtype}`)
+    // const result = model.predict(X)
+    const result = model.predict(X).as1D().argMax().toInt()
+
+    // var testM = document.querySelector('.test-m')
+    // testM.innerText = a1
+
+    result.print()
+    //result.as1D().argMax().print()
+    // result.as1D().argMax().asScalar().toInt().print()
 
     // Test Code
-    const outputCanvas = document.createElement('CANVAS')
-    cv.imshow(outputCanvas, image)
-    document.body.appendChild(outputCanvas)
+    // const outputCanvas = document.createElement('CANVAS')
+    // cv.imshow(outputCanvas, image)
+    // document.body.appendChild(outputCanvas)
 
     // clean up
     // memory free
@@ -64,4 +98,7 @@ function predictImage() {
     contours.delete()
     cnt.delete()
     hierarchy.delete()
+    M.delete()
+    X.dispose()
+    result.dispose()
 }
