@@ -21,8 +21,12 @@
     <!-- Bootstrap -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script> -->
 
+    <!-- OpenCV -->
+    <script src='vendor/opencv.js'></script>
+
     <!-- Javascript Files -->
     <script src='drawing.js'></script>
+    <script src='processing.js'></script>
 </head>
 
 <body>
@@ -41,19 +45,11 @@
     </div>
 
     <script>
-        async function loadModel() {
-            // const myTensor = tf.tensor(dataX0)
-            //
-            // const model = await tf.loadLayersModel('ML-Model/tfjs-model/model.json')
-            // const result = model.predict(myTensor)
-            // prediction.as1D().argMax().print();
-            // result.as1D().argMax().print();
-        }
-
         loadModel()
         prepareCanvas()
 
         document.getElementById('checkAnswer').addEventListener('click', () => {
+            predictImage()
             clearCanvas()
         })
     </script>

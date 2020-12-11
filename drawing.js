@@ -11,7 +11,7 @@ var canvas
 var context
 
 function prepareCanvas() {
-    console.log('Preparing canvas')
+    // console.log('Preparing canvas')
 
     canvas = document.getElementById('my-canvas')
     context = canvas.getContext('2d')
