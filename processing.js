@@ -83,9 +83,12 @@ function predictImage() {
     // var testM = document.querySelector('.test-m')
     // testM.innerText = a1
 
-    result.print()
+    // result.print()
     //result.as1D().argMax().print()
     // result.as1D().argMax().asScalar().toInt().print()
+
+    const output = result.dataSync()[0]
+    // console.log(`Out: ${output}`)
 
     // Test Code
     // const outputCanvas = document.createElement('CANVAS')
@@ -101,4 +104,6 @@ function predictImage() {
     M.delete()
     X.dispose()
     result.dispose()
+
+    return output;
 }

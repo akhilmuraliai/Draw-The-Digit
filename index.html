@@ -27,6 +27,7 @@
     <!-- Javascript Files -->
     <script src='drawing.js'></script>
     <script src='processing.js'></script>
+    <script src='game-logic.js'></script>
 </head>
 
 <body>
@@ -47,10 +48,12 @@
     <script>
         loadModel()
         prepareCanvas()
+        nextQuestion()
 
         document.getElementById('checkAnswer').addEventListener('click', () => {
-            predictImage()
+            checkAnswer()
             clearCanvas()
+            nextQuestion()
         })
     </script>
 
