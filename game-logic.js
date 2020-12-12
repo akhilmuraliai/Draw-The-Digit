@@ -12,6 +12,7 @@ function nextQuestion(){
     answer = n1 + n2
 }
 
+
 function checkAnswer() {
 
     const prediction = predictImage()

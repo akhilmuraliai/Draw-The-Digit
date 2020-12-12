@@ -1,7 +1,7 @@
 var model
 
 async function loadModel() {
-    model = await tf.loadLayersModel('ML-Model/tfjs-model/model.json')
+    model = await tf.loadLayersModel('./ML-Model/tfjs-model/model.json')
 }
 
 
@@ -78,7 +78,7 @@ function predictImage() {
     // console.log(`Shape of Tensor: ${X.shape}`)
     // console.log(`dtype of Tensor: ${X.dtype}`)
     // const result = model.predict(X)
-    const result = model.predict(X).as1D().argMax().toInt()
+    const result = model.predict(X).as1D().argMax()
 
     // var testM = document.querySelector('.test-m')
     // testM.innerText = a1
@@ -96,7 +96,6 @@ function predictImage() {
     // document.body.appendChild(outputCanvas)
 
     // clean up
-    // memory free
     image.delete()
     contours.delete()
     cnt.delete()
