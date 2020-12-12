@@ -6,22 +6,24 @@ async function loadModel() {
 
 
 function predictImage() {
-    // console.log("processing..");
-
+    // Accepting canvas image
     let image = cv.imread(canvas)
 
+    // Converting to grayscale and thresholding
     cv.cvtColor(image, image, cv.COLOR_RGBA2GRAY, 0)
-
     cv.threshold(image, image, 175, 255, cv.THRESH_BINARY)
 
+    // Finding contours
     let contours = new cv.MatVector()
     let hierarchy = new cv.Mat()
-    cv.findContours(image, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+    cv.findContours(image, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
 
+    // Bounding rectangles (ROI), crop
     let cnt = contours.get(0)
     let rect = cv.boundingRect(cnt)
     image = image.roi(rect)
 
+    // Resize the image
     var height = image.rows
     var width = image.cols
     // tall and narrow image
@@ -39,51 +41,48 @@ function predictImage() {
     let newSize = new cv.Size(width, height)
     cv.resize(image, image, newSize, 0, 0, cv.INTER_AREA)
 
+    // Add Padding
     const LEFT = Math.ceil(4 + (20 - width)/2)
     const RIGHT = Math.floor(4 + (20 - width)/2)
     const TOP = Math.ceil(4 + (20 - height)/2)
     const BOTTOM = Math.floor(4 + (20 - height)/2)
 
-    // console.log(`T: ${TOP} | B: ${BOTTOM} | L: ${LEFT} | R: ${RIGHT}`);
-
     const BLACK = new cv.Scalar(0, 0, 0, 0)
     cv.copyMakeBorder(image, image, TOP, BOTTOM, LEFT, RIGHT, cv.BORDER_CONSTANT, BLACK)
 
-    // center of mass
-    cv.findContours(image, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+    // Center of mass
+    cv.findContours(image, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
     cnt = contours.get(0)
     const Moments = cv.moments(cnt, false)
 
     const cx = Moments.m10 / Moments.m00
     const cy = Moments.m01 / Moments.m00
 
-    // console.log(`M00: ${Moments.m00} | cx: ${cx} | cy: ${cy}`)
-
+    // Shifting the image
     const X_SHIFT = Math.round(image.cols/2.0 - cx)
     const Y_SHIFT = Math.round(image.rows/2.0 - cy)
 
-    const M = cv.matFromArray(2, 3, cv.CV_64FC1, [1, 0, X_SHIFT, 0, 1, Y_SHIFT]);
+    const M = cv.matFromArray(2, 3, cv.CV_64FC1, [1, 0, X_SHIFT, 0, 1, Y_SHIFT])
     newSize = new cv.Size(image.rows, image.cols);
-    cv.warpAffine(image, image, M, newSize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, BLACK);
+    cv.warpAffine(image, image, M, newSize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, BLACK)
 
+    // Normalizing the image
     let pixelValues = image.data
-    // console.log(`BF: ${pixelValues}`)
     pixelValues = Float32Array.from(pixelValues)
     pixelValues = pixelValues.map((item) => {
         return item/255.0
     })
-    // console.log(`AF: ${pixelValues}`)
+
+    // Prediction and output returning
     const shape = [1, 28, 28, 1]
     const X = tf.tensor([pixelValues], shape)
     // console.log(`Shape of Tensor: ${X.shape}`)
     // console.log(`dtype of Tensor: ${X.dtype}`)
-    // const result = model.predict(X)
     const result = model.predict(X).as1D().argMax()
 
     // var testM = document.querySelector('.test-m')
     // testM.innerText = a1
 
-    // result.print()
     //result.as1D().argMax().print()
     // result.as1D().argMax().asScalar().toInt().print()
 
@@ -95,7 +94,7 @@ function predictImage() {
     // cv.imshow(outputCanvas, image)
     // document.body.appendChild(outputCanvas)
 
-    // clean up
+    // Clean up
     image.delete()
     contours.delete()
     cnt.delete()
@@ -104,5 +103,5 @@ function predictImage() {
     X.dispose()
     result.dispose()
 
-    return output;
+    return output
 }

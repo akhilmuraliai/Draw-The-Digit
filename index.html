@@ -1,7 +1,7 @@
 <html lang='en'>
 
 <head>
-    <title>Math Garden</title>
+    <title>Draw the digit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
@@ -33,7 +33,7 @@
 <body>
 
     <div class='container'>
-        <h1 id="title">Math Garden</h1>
+        <h1 id="title">Draw the Digit</h1>
 
         <h2 id='question'><span id='n1'>3</span> + <span id='n2'>2</span> = </h2>
 
@@ -46,8 +46,13 @@
     </div>
 
     <script>
+        // loading the trained model
         loadModel()
+
+        // prepareing the canvas for drawing
         prepareCanvas()
+
+        // new question preparation on each refresh
         nextQuestion()
 
         document.getElementById('checkAnswer').addEventListener('click', () => {

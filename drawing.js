@@ -11,7 +11,6 @@ var canvas
 var context
 
 function prepareCanvas() {
-    // console.log('Preparing canvas')
 
     canvas = document.getElementById('my-canvas')
     context = canvas.getContext('2d')
@@ -27,7 +26,6 @@ function prepareCanvas() {
 
     // mouse events
     document.addEventListener('mousedown', (event) => {
-        // console.log("Mouse Down")
         isPainting = true
 
         currentX = event.clientX - canvas.offsetLeft
@@ -42,12 +40,11 @@ function prepareCanvas() {
             previousY = currentY
             currentY = event.clientY - canvas.offsetTop
 
-            draw();
+            draw()
         }
     })
 
     document.addEventListener('mouseup', (event) => {
-        // console.log("Mouse Up")
         isPainting = false
     })
 
@@ -75,7 +72,7 @@ function prepareCanvas() {
             previousY = currentY
             currentY = event.touches[0].clientY - canvas.offsetTop
 
-            draw();
+            draw()
         }
     })
 }
